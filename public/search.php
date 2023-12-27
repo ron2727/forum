@@ -4,8 +4,7 @@ require_once '../database/connection.php';
 session_start();
 $q = $_GET['search'];
 
-$sql = "SELECT users.firstname, users.lastname, categories.name, users.profile_photo, 
-      post.id, post.created_at, post.title, post.content  
+$sql = "SELECT post.*, users.firstname, users.lastname, categories.name, users.profile_photo  
       FROM post
       INNER JOIN users ON post.user_id = users.id
       INNER JOIN categories ON post.category_id = categories.id
@@ -27,7 +26,9 @@ $result = $statement->fetchAll(PDO::FETCH_NAMED);
     padding-left: 1rem;
     padding-right: 1rem;
   }
-
+  .post-list{
+    margin-top: 5rem;
+  }
   .post-item {
     padding-top: 0.8rem;
   }
@@ -62,11 +63,6 @@ $result = $statement->fetchAll(PDO::FETCH_NAMED);
   .post-stats {
     font-size: 0.8rem;
   }
-
-  .filter-text {
-    font-size: 0.7rem;
-  }
-
   @media (min-width: 640px) {
     .post-item {
       padding: 1rem;
@@ -121,23 +117,12 @@ $result = $statement->fetchAll(PDO::FETCH_NAMED);
   }
 </style>
 
-<div class="main-container">
-  <div class=" filter-container text-end mt-3">
-    <div class="dropdown open">
-      <a class="filter-text btn btn-white border rounded-0" type="button" id="filter" data-bs-toggle="dropdown">
-        Filter <i class="bi bi-funnel"></i>
-      </a>
-      <div class="dropdown-menu" aria-labelledby="filter">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item disabled" href="#">Disabled action</a>
-      </div>
-    </div>
-  </div>
+<div class="main-container"> 
   <div class="post-list">
     <?php if ($statement->rowCount()):?>
     <?php foreach ($result as $post) : ?>
       <a href="post.php?id=<?php echo $post['id'] ?>" class=" nav-link">
-        <div class="post-item row my-3" style="background:#d9d9d9">
+        <div class="post-item row my-3 bg-white">
           <div class="col-sm-11">
             <div class="header d-flex mb-2">
               <div class="image-profile border">
@@ -150,14 +135,22 @@ $result = $statement->fetchAll(PDO::FETCH_NAMED);
                 </div>
               </div>
             </div>
+            <div class="categories mb-2">
+              <span class="badge category-item bg-primary"><?php echo $post['name'] ?></span>
+            </div>
             <h4 class="post-title fw-semibold m-0"><?php echo $post['title'] ?></h4>
-            <div class="post-content">
+            <div class="post-content text-break ">
               <?php echo $post['content'] ?>
             </div>
             <div class="footer my-1">
-              <span class="post-stats">265 views - </span>
-              <span class="post-stats">154 replies - </span>
-              <span class="post-stats">Share</span>
+              <span class="post-stats"> <?php echo $post['views']?> <i class="bi bi-eye"></i> - </span>
+              <?php
+                $sql = "SELECT * FROM comments WHERE post_id = :post_id";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(':post_id', $post['id'], PDO::PARAM_INT);
+                $statement->execute();
+              ?>
+              <span class="post-stats"><?php echo $statement->rowCount()?> <i class="bi bi-chat-left"></i></span>
             </div>
           </div>
           <?php

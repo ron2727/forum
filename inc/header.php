@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
-<body class="bg-dark">
-<!-- <style>
+<!-- <body class="bg-dark">
+<style>
     *{
-        color: white;
+       background: black;
     }
-</style>
-<body>  -->
+</style> -->
+<body style="background: #e2e8f0;"> 

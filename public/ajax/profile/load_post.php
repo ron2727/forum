@@ -4,14 +4,14 @@ require_once '../../../database/connection.php';
 
 $user_id = $_GET['userid'];
 $startFrom = $_GET['startFrom'];
- 
+
 $sql = "SELECT * FROM users WHERE id = :id";
 $statement = $pdo->prepare($sql);
 $statement->bindParam(":id", $user_id, PDO::PARAM_INT);
 $statement->execute();
 $user = $statement->fetch(PDO::FETCH_NAMED);
 
-$sql = "SELECT users.firstname, users.lastname, post.title, post.content, post.created_at, post.id
+$sql = "SELECT post.*, users.firstname, users.lastname, users.profile_photo
         FROM users
         INNER JOIN post ON users.id = post.user_id 
         WHERE users.id = :id
@@ -26,10 +26,11 @@ $result = $statement->fetchAll();
 
 <?php foreach ($result as $post) : ?>
     <a href="post.php?id=<?php echo $post['id'] ?>" class=" nav-link">
-        <div class="post-item row my-3" style="background:#d9d9d9">
+        <div class="post-item row my-3 bg-white">
             <div class="col-md-11">
                 <div class="header d-flex mb-2">
                     <div class="image-profile border">
+                        <img class="post-image-profile" src="uploaded_images/<?php echo $user['profile_photo'] ?>" alt="profile">
                     </div>
                     <div class="user-post-details ms-2">
                         <h5 class="post-user-name fw-semibold"><?php echo $user['firstname'] . ' ' . $user['lastname'] ?></h5>
@@ -41,9 +42,14 @@ $result = $statement->fetchAll();
                     <?php echo $post['content'] ?>
                 </div>
                 <div class="footer my-1">
-                    <span class="post-stats">265 views - </span>
-                    <span class="post-stats">154 replies - </span>
-                    <span class="post-stats">Share</span>
+                    <span class="post-stats"> <?php echo $post['views'] ?> <i class="bi bi-eye"></i> - </span>
+                    <?php
+                    $sql = "SELECT * FROM comments WHERE post_id = :post_id";
+                    $statement = $pdo->prepare($sql);
+                    $statement->bindParam(':post_id', $post['id'], PDO::PARAM_INT);
+                    $statement->execute();
+                    ?>
+                    <span class="post-stats"><?php echo $statement->rowCount() ?> <i class="bi bi-chat-left"></i></span>
                 </div>
             </div>
             <?php

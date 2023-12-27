@@ -106,6 +106,12 @@
          font-size: 0.8rem;
      }
 
+     .post-image-profile {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+     }
+
      .date-post {
          font-size: 0.6rem;
      }
@@ -165,8 +171,8 @@
          }
 
          .image-profile {
-             width: 60px;
-             height: 60px
+             width: 50px;
+             height: 50px
          }
 
          .btn-upload-prof {
@@ -213,10 +219,11 @@
          <div class="user-post-list px-3" user-id="<?php echo $_GET['id'] ?>">
              <?php foreach ($result as $post) : ?>
                  <a href="post.php?id=<?php echo $post['id'] ?>" class=" nav-link">
-                     <div class="post-item row my-3" style="background:#d9d9d9">
+                     <div class="post-item row my-3 bg-white">
                          <div class="col-sm-11">
                              <div class="header d-flex mb-2">
                                  <div class="image-profile border">
+                                     <img class="post-image-profile" src="uploaded_images/<?php echo $user['profile_photo'] ?>" alt="profile">
                                  </div>
                                  <div class="user-post-details ms-2">
                                      <h5 class="post-user-name fw-semibold"><?php echo $user['firstname'] . ' ' . $user['lastname'] ?></h5>

@@ -8,8 +8,7 @@ if (!isset($_GET['id'])) {
 }
 $post_id = htmlspecialchars($_GET['id']);
 
-$sql = "SELECT users.firstname, users.lastname, categories.name, post.user_id, users.profile_photo, 
-      post.id, post.created_at, post.title, post.content, post.views  
+$sql = "SELECT post.*, users.firstname, users.lastname, categories.name, users.profile_photo 
       FROM post
       INNER JOIN users ON post.user_id = users.id
       INNER JOIN categories ON post.category_id = categories.id 
@@ -33,8 +32,11 @@ $statement->execute();
 
 <?php include_once '../components/navigation.php' ?>
 <?php
-if (!isset($_SESSION['user_id'])) { 
-  include_once '../components/create_post_modal_not_log.php';
+if (!isset($_SESSION['user_id'])) {
+   include_once '../components/create_post_modal_not_log.php';
+}
+if ($post['user_id'] == $_SESSION['user_id']) {
+   include_once '../components/create_post_modal.php';
 }
 ?>
 <style>
@@ -47,22 +49,30 @@ if (!isset($_SESSION['user_id'])) {
       padding-bottom: 0.4rem;
    }
 
-   .image-profile-con{
+   .image-profile-con {
       width: 40px;
       height: 40px
    }
 
-   .post-image-profile, .comment-image-profile{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
+   .post-image-profile,
+   .comment-image-profile {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+   }
+
+   .content-img {
+      width: 100%;
+      height: 300px;
+      object-fit: contain;
+      border: 1px solid #f2f2f2;
+   }
+
    .image-profile-comment {
       width: 30px;
       height: 30px
    }
- 
+
    .user-name {
       font-size: 0.8rem;
    }
@@ -87,10 +97,14 @@ if (!isset($_SESSION['user_id'])) {
       font-size: 0.9rem;
    }
 
-   .comment-text {
+   #comment {
       font-size: 0.8rem;
    }
 
+   .comment-text,
+   #btnComment {
+      font-size: 0.8rem;
+   }
 
    @media (min-width: 640px) {}
 
@@ -114,7 +128,7 @@ if (!isset($_SESSION['user_id'])) {
          width: 50%;
       }
 
-      .image-profile-con{
+      .image-profile-con {
          width: 60px;
          height: 60px
       }
@@ -142,26 +156,37 @@ if (!isset($_SESSION['user_id'])) {
       .comment-not-log-text {
          font-size: 1rem;
       }
+
+      #comment {
+         font-size: 0.9rem;
+      }
    }
 </style>
- 
+
 <div class=" main-container mb-5 d-flex justify-content-center" style="margin-top:80px;">
-   <div class="post-container">
+   <div class="post-container py-3 px-3 bg-white border" post-id="<?php echo $post_id?>">
       <h4 class="title-post text-gray"><?php echo $post['title'] ?></h4>
-      <div class="user-post-details d-flex my-3">
-         <div class="image-profile-con border">
-           <img class="post-image-profile" src="uploaded_images/<?php echo $post['profile_photo']?>" alt="profile">
+      <div class="user-post-details position-relative">
+         <div class="d-flex my-3">
+            <div class="image-profile-con border">
+               <img class="post-image-profile" src="uploaded_images/<?php echo $post['profile_photo'] ?>" alt="profile">
+            </div>
+            <div class="user-post-details ms-2">
+               <a href="profile.php?id=<?php echo $post['user_id'] ?>" class="user-name nav-link fw-semibold"><?php echo $post['firstname'] . ' ' . $post['lastname'] ?></a>
+               <small class="date-post"><?php echo getAgoDate($post['created_at']) ?></small>
+            </div>
          </div>
-         <div class="user-post-details ms-2">
-            <a href="profile.php?id=<?php echo $post['user_id']?>" class="user-name nav-link fw-semibold"><?php echo $post['firstname'] . ' ' . $post['lastname'] ?></a>
-            <small class="date-post"><?php echo getAgoDate($post['created_at']) ?></small>
-         </div>
+         <?php if($post['user_id'] == $_SESSION['user_id']):?>
+          <span id="btnEditPost" class=" position-absolute top-0 end-0" data-bs-toggle="modal" data-bs-target="#postModal">
+             <i class="bi bi-pencil-fill"></i>
+          </span>
+         <?php endif;?>
       </div>
       <div class="categories mb-2">
-         <span class="badge category-item bg-primary"><?php echo $post['name'] ?></span>
+         <a href="category.php?id=<?php echo $post['category_id'] ?>&name=<?php echo $post['name'] ?>" class="badge category-item bg-primary text-decoration-none"><?php echo $post['name'] ?></a>
       </div>
       <div class="post-stats d-flex align-items-center border-top border-bottom">
-         <button id="<?php echo isset($_SESSION['user_id']) ? 'btnLike':'postModal'?>" class="btn border-0 mx-2" data-bs-toggle="<?php echo isset($_SESSION['user_id']) ? '#':'modal'?>" data-bs-target="#postModal">
+         <button id="<?php echo isset($_SESSION['user_id']) ? 'btnLike' : 'postModal' ?>" class="btn border-0 mx-2" data-bs-toggle="<?php echo isset($_SESSION['user_id']) ? '#' : 'modal' ?>" data-bs-target="#postModal">
             <?php
             $sql = "SELECT * FROM likes 
                     WHERE user_id = :user_id AND post_id = :post_id";
@@ -202,7 +227,12 @@ if (!isset($_SESSION['user_id'])) {
             ?>
          </span>
       </div>
-      <div class="post-content p-2 border-bottom text-break"><?php echo $post['content'] ?></div>
+      <div class="post-content p-2 border-bottom text-break">
+         <?php if (!empty($post['image_name'])) : ?>
+            <img src="uploaded_images/<?php echo $post['image_name'] ?>" alt="img" class="content-img mb-2">
+         <?php endif; ?>
+         <div class="post-content-text"><?php echo $post['content'] ?></div>
+      </div>
       <div class="post-comments-container">
          <h3 class="comment-label fw-semibold py-2">Comments</h3>
          <div class="comment-form my-3">
@@ -238,7 +268,7 @@ if (!isset($_SESSION['user_id'])) {
                   <div class="comment-item border-top border-bottom py-3">
                      <div class="header d-flex">
                         <div class="image-profile-comment border">
-                          <img class="comment-image-profile" src="uploaded_images/<?php echo $comments['profile_photo']?>" alt="profile">
+                           <img class="comment-image-profile" src="uploaded_images/<?php echo $comments['profile_photo'] ?>" alt="profile">
                         </div>
                         <div class=" user-comment-details ms-2">
                            <h6 class="user-name-comment py-0 m-0"><?php echo $comments['firstname'] . ' ' . $comments['lastname'] ?></h6>
@@ -253,7 +283,7 @@ if (!isset($_SESSION['user_id'])) {
                   </div>
                <?php endforeach; ?>
             <?php else : ?>
-               <div class="no-comment-con my-3 border-top border-bottom py-3">
+               <div class="no-comment-con my-3 border-top py-3">
                   <h6 class="comment-label text-center py-5">No comments yet</h6>
                </div>
             <?php endif; ?>
@@ -267,6 +297,17 @@ if (!isset($_SESSION['user_id'])) {
 
 <script>
    $(document).ready(function() {
+      $('#btnEditPost').click(function (e) {   
+         const postid = $('.post-container').attr('post-id');
+         $.ajax({
+            type: "GET",
+            url: "ajax/post/edit_post_form.php",
+            data: {postid}, 
+            success: function (response) {
+               $('.modal-content').html(response)
+            }
+         });
+      });
 
       $('#comment').on('input', function() {
          let comment = $(this).val()
@@ -335,7 +376,7 @@ if (!isset($_SESSION['user_id'])) {
             data: {
                postid
             },
-            dataType:'html',
+            dataType: 'html',
             success: function(response) {
                $('#btnLike').html(response)
             }

@@ -137,7 +137,7 @@ if (isset($_SESSION['user_id'])) {
     ?>
     <?php foreach ($result as $post) : ?>
       <a href="post.php?id=<?php echo $post['id'] ?>" class=" nav-link">
-        <div class="post-item row my-3" style="background:#d9d9d9">
+        <div class="post-item row my-3 bg-white ">
           <div class="col-sm-11">
             <div class="header d-flex mb-2">
               <div class="image-profile border">
@@ -154,7 +154,7 @@ if (isset($_SESSION['user_id'])) {
               <span class="badge category-item bg-primary"><?php echo $post['name'] ?></span>
             </div>
             <h4 class="post-title fw-semibold m-0"><?php echo $post['title'] ?></h4>
-            <div class="post-content">
+            <div class="post-content text-break ">
               <?php echo $post['content'] ?>
             </div>
             <div class="footer my-1">
@@ -226,7 +226,7 @@ if (isset($_SESSION['user_id'])) {
             <?php if ($current_page == $i) : ?>
               <a href="index.php?page=<?php echo $i ?>" class=" nav-link mx-1 px-2 py-1 text-white text-center" style="width: 35px;background: #6d28d9"><?php echo $i?></a>
             <?php else:?>
-              <a href="index.php?page=<?php echo $i ?>" class=" nav-link mx-1 px-2 py-1 text-center border" style="width: 35px"><?php echo $i?></a>
+              <a href="index.php?page=<?php echo $i ?>" class=" nav-link mx-1 px-2 py-1 text-center border bg-white" style="width: 35px"><?php echo $i?></a>
             <?php endif; ?>
           </div>
         <?php endfor; ?>
