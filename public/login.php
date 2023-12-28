@@ -42,7 +42,7 @@ if ($request_method == 'POST') {
                 }
          
        } else {
-               $errors['email'] = "Email does not email";
+               $errors['email'] = "Email does not exist";
             }
 
     }else {
@@ -57,7 +57,7 @@ if ($request_method == 'POST') {
 <style>
     body {
         /* position: relative; */
-        background-image: linear-gradient(140deg, #a21caf 0%, #6d28d9 50%, #1d4ed8 75%);
+        background-image: linear-gradient(140deg, #a21caf 0%, #6d28d9 50%, #1d4ed8 75%) !important;
     } 
     .login-container {
         width: 98%;

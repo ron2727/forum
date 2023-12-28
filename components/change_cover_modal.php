@@ -1,7 +1,7 @@
 php
 <style>
     .lbl-create-1 {
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
     .lbl-create-2 {

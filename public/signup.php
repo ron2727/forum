@@ -22,23 +22,26 @@ if ($request_method == 'POST') {
             date_default_timezone_set('Asia/Manila');
             $date_time = date('m/d/Y H:i');
             $password = md5($inputs['password']);
-            $sql = 'INSERT INTO users(firstname, lastname, email, password, verification_id, created_at)
-                    VALUE(:firstname, :lastname, :email, :password, :verification_id, :created_at)';
+            $sql = 'INSERT INTO users(firstname, lastname, email, password, created_at)
+                    VALUE(:firstname, :lastname, :email, :password, :created_at)';
             $statement = $pdo->prepare($sql);
 
             $success = $statement->execute([
                                      'firstname' => $inputs['firstname'],
                                      'lastname' => $inputs['lastname'],
                                      'email' => $inputs['email'],
-                                     'password' => $password,
-                                     'verification_id' => bin2hex(random_bytes(35)),
+                                     'password' => $password, 
                                      'created_at' => $date_time,
                                   ]);
             if (!$success) {
                 header($_SERVER['SERVER_PROTOCOL'] . ' Something went wrong...');
                 exit;
             }else {
-                header("Location: signup.php");
+                $_SESSION['user_id'] = $pdo->lastInsertId();
+                $_SESSION['user_name'] = $inputs['firstname'] . " " . $inputs['lastname'];
+                $_SESSION['profile_photo'] = 'default_profile.png';
+
+                header("Location: index.php");
                 exit;
             }
         } 
@@ -52,9 +55,8 @@ if ($request_method == 'POST') {
 <?php view('header.php', 'Signup') ?>
 
 <style>
-    body {
-        /* position: relative; */
-        background-image: linear-gradient(140deg, #a21caf 0%, #6d28d9 50%, #1d4ed8 75%);
+    body { 
+        background-image: linear-gradient(140deg, #a21caf 0%, #6d28d9 50%, #1d4ed8 75%) !important;
     } 
     .signup-container {
         width: 98%;

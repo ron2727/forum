@@ -21,6 +21,7 @@
     $statement = $pdo->prepare($sql);
     $statement->bindParam(":user_id", $user['id'], PDO::PARAM_INT);
     $statement->execute();
+    $hasPost = $statement->rowCount();
     $result = $statement->fetchAll();
 
     ?>
@@ -217,6 +218,7 @@
              <h4 class="user-name fw-bold"><?php echo $user['firstname'] . ' ' . $user['lastname'] ?></h4>
          </div>
          <div class="user-post-list px-3" user-id="<?php echo $_GET['id'] ?>">
+           <?php if($hasPost):?>
              <?php foreach ($result as $post) : ?>
                  <a href="post.php?id=<?php echo $post['id'] ?>" class=" nav-link">
                      <div class="post-item row my-3 bg-white">
@@ -281,18 +283,12 @@
                          </div>
                      </div>
                  </a>
-             <?php endforeach; ?>
-             <!-- <div class=" pagination-container d-flex justify-content-end">
-      <div class="page-list d-flex align-items-center">
-        <a href="#" class="prev-page nav-link mx-2"><i class="bi bi-chevron-left"></i></a>
-        <div class="page-numbers d-flex">
-          <a href="#" class=" nav-link mx-1 px-2 py-1 text-white text-center" style="width: 35px;background: #6d28d9">1</a>
-          <a href="#" class=" nav-link mx-1 px-2 py-1 text-center border" style="width: 35px">2</a>
-          <a href="#" class=" nav-link mx-1 px-2 py-1 text-center border" style="width: 35px">3</a>
-        </div>
-        <a href="#" class="next-page nav-link mx-2"><i class="bi bi-chevron-right"></i></a>
-      </div>
-    </div> -->
+             <?php endforeach; ?> 
+           <?php else:?>
+              <div class="msg-con">
+                <h6 class="msg-txt text-center">No post yet</h6>
+              </div>
+           <?php endif;?>
          </div>
      </div>
  </div>

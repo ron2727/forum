@@ -60,8 +60,9 @@ if (isset($_SESSION['user_id'])) {
     font-size: 0.8rem;
   }
 
-  .filter-text {
-    font-size: 0.7rem;
+  .p-num {
+    font-size: 0.6rem;
+    padding: 5px 10px;
   }
 
   @media (min-width: 640px) {
@@ -69,8 +70,8 @@ if (isset($_SESSION['user_id'])) {
       padding: 1rem;
     }
 
-    .filter-text {
-      font-size: 0.9rem;
+    .p-num {
+      font-size: 0.8rem; 
     }
   }
 
@@ -113,8 +114,8 @@ if (isset($_SESSION['user_id'])) {
       font-size: 0.9rem;
     }
 
-    .filter-text {
-      font-size: 1rem;
+    .p-num {
+      font-size: 0.9rem; 
     }
   }
 </style>
@@ -158,14 +159,14 @@ if (isset($_SESSION['user_id'])) {
               <?php echo $post['content'] ?>
             </div>
             <div class="footer my-1">
-              <span class="post-stats"> <?php echo $post['views']?> <i class="bi bi-eye"></i> - </span>
+              <span class="post-stats"> <?php echo $post['views'] ?> <i class="bi bi-eye"></i> - </span>
               <?php
-                $sql = "SELECT * FROM comments WHERE post_id = :post_id";
-                $statement = $pdo->prepare($sql);
-                $statement->bindParam(':post_id', $post['id'], PDO::PARAM_INT);
-                $statement->execute();
+              $sql = "SELECT * FROM comments WHERE post_id = :post_id";
+              $statement = $pdo->prepare($sql);
+              $statement->bindParam(':post_id', $post['id'], PDO::PARAM_INT);
+              $statement->execute();
               ?>
-              <span class="post-stats"><?php echo $statement->rowCount()?> <i class="bi bi-chat-left"></i></span>
+              <span class="post-stats"><?php echo $statement->rowCount() ?> <i class="bi bi-chat-left"></i></span>
             </div>
           </div>
           <?php
@@ -208,7 +209,7 @@ if (isset($_SESSION['user_id'])) {
     <?php
     $sql = "SELECT * FROM post";
     $statement = $pdo->query($sql);
-    $number_of_pages = round($statement->rowCount() / $number_posts_per_page); 
+    $number_of_pages = round($statement->rowCount() / $number_posts_per_page);
     $prev_page = $current_page - 1;
     $next_page = $current_page + 1;
     if ($prev_page < 1) {
@@ -220,17 +221,17 @@ if (isset($_SESSION['user_id'])) {
     ?>
     <div class=" pagination-container mb-4 d-flex justify-content-end">
       <div class="page-list d-flex align-items-center">
-        <a href="index.php?page=<?php echo $prev_page?>" class="prev-page nav-link mx-2"><i class="bi bi-chevron-left"></i></a>
+        <a href="index.php?page=<?php echo $prev_page ?>" class="prev-page nav-link mx-2"><i class="bi bi-chevron-left"></i></a>
         <?php for ($i = 1; $i <= $number_of_pages; $i++) : ?>
           <div class="page-numbers d-flex">
             <?php if ($current_page == $i) : ?>
-              <a href="index.php?page=<?php echo $i ?>" class=" nav-link mx-1 px-2 py-1 text-white text-center" style="width: 35px;background: #6d28d9"><?php echo $i?></a>
-            <?php else:?>
-              <a href="index.php?page=<?php echo $i ?>" class=" nav-link mx-1 px-2 py-1 text-center border bg-white" style="width: 35px"><?php echo $i?></a>
+              <a href="index.php?page=<?php echo $i ?>" class="p-num nav-link mx-1 text-white text-center" style="background: #6d28d9"><?php echo $i ?></a>
+            <?php else : ?>
+              <a href="index.php?page=<?php echo $i ?>" class="p-num nav-link mx-1 text-center border bg-white"><?php echo $i ?></a>
             <?php endif; ?>
           </div>
         <?php endfor; ?>
-        <a href="index.php?page=<?php echo $next_page?>" class="next-page nav-link mx-2"><i class="bi bi-chevron-right"></i></a>
+        <a href="index.php?page=<?php echo $next_page ?>" class="next-page nav-link mx-2"><i class="bi bi-chevron-right"></i></a>
       </div>
     </div>
   </div>

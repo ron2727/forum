@@ -234,7 +234,7 @@ if ($post['user_id'] == $_SESSION['user_id']) {
          <div class="post-content-text"><?php echo $post['content'] ?></div>
       </div>
       <div class="post-comments-container">
-         <h3 class="comment-label fw-semibold py-2">Comments</h3>
+         <h3 class="comment-label fw-semibold py-2">Add comments</h3>
          <div class="comment-form my-3">
             <?php if (isset($_SESSION['user_id'])) : ?>
                <form id="commentForm">
